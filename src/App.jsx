@@ -8,7 +8,7 @@ import LoginPage from "./components/LoginPage";
 import UserDashboard from "./components/UserDashboard";
 import BookingPage from "./components/BookingPage";
 import RestaurantControlPanel from "./components/RestaurantControlPanel";
-import bgMusic from "./assets/bg-music.mp3";
+
 
 const App = () => {
   // Redux se data
@@ -91,7 +91,7 @@ const App = () => {
     >
       {/* Global video background */}
       <video
-        src="/src/assets/bgv.mp4"
+        src="https://files.catbox.moe/7a6vvk.mp4"
         autoPlay
         loop
         muted
@@ -172,7 +172,11 @@ const App = () => {
       )}
 
       {/* Global background music */}
-      <audio ref={audioRef} src={bgMusic} loop />
+      <audio
+        ref={audioRef}
+        src="https://files.catbox.moe/3d7532.mp3"
+        loop
+      />
 
       <button
         onClick={toggleMusic}
