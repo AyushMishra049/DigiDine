@@ -1,5 +1,6 @@
 // src/components/StartScreen.jsx
 import React, { useEffect, useState } from "react";
+import eatImg from "../assets/eat.png";
 
 const StartScreen = ({ onEnter }) => {
   const [imageStyle, setImageStyle] = useState({
@@ -44,14 +45,13 @@ const StartScreen = ({ onEnter }) => {
       />
 
       <img
-        src="/eat.png"
+        src={eatImg}
         alt="eat"
         style={{
           ...imageStyle,
           filter: "drop-shadow(0 0 18px rgba(255,255,255,0.6))",
         }}
       />
-
 
       {/* DiGiDine button */}
       <div
