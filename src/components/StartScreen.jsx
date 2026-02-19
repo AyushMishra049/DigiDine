@@ -44,13 +44,14 @@ const StartScreen = ({ onEnter }) => {
       />
 
       <img
-        src="/src/assets/eat.png"
+        src="/eat.png"
         alt="eat"
         style={{
           ...imageStyle,
           filter: "drop-shadow(0 0 18px rgba(255,255,255,0.6))",
         }}
       />
+
 
       {/* DiGiDine button */}
       <div
