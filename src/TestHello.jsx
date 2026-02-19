@@ -6,7 +6,7 @@ const TestHello = () => {
   useEffect(() => {
     const fetchHello = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/hello");
+        const res = await fetch("https://digidine-backend-1-z9a7.onrender.com");
         const text = await res.text();
         setMessage(text);
       } catch (err) {
