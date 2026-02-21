@@ -1,5 +1,7 @@
 // src/components/RestaurantControlPanel.jsx
 import React, { useState, useRef } from "react";
+import eatImg from "../assets/eat.png";
+
 
 const pillStyle = (bg, color = "#fff") => ({
   display: "inline-block",
@@ -346,7 +348,7 @@ const RestaurantControlPanel = ({ restaurant, onLogout }) => {
               }}
             >
               <img
-                src="/src/assets/eat.png"
+                src={eatImg}
                 alt="DiGiDine"
                 style={{
                   width: 28,

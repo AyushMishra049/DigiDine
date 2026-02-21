@@ -4,6 +4,8 @@ import { setUserAuth } from "../store";
 import HungryVideo from "../assets/v1.mp4"; // 👈 your video file
 import { addRestaurant } from "../store";
 import { API_BASE_URL } from "../config";
+import eatImg from "../assets/eat.png";
+
 
 
 
@@ -459,7 +461,7 @@ const UserDashboard = ({
         }}
       >
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{ width: 40, height: 40, cursor: "pointer" }}
           onClick={() => setShowMenu((prev) => !prev)}

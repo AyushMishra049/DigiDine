@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addRestaurant, setUserAuth, setRestaurantAuth } from "../store";
 import v0 from "../assets/v0.mp4";
 import { API_BASE_URL } from "../config"; // ⭐ NEW: backend base URL
+import eatImg from "../assets/eat.png";
 
 const InputField = ({ label, helper, value, onChange, type = "text" }) => (
   <div style={{ width: "100%", marginBottom: 8 }}>
@@ -334,7 +335,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
 
         {/* Logo + tagline */}
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{
             position: "absolute",
@@ -656,7 +657,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
           }}
         />
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{
             position: "absolute",
@@ -835,7 +836,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         />
 
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{
             position: "absolute",
@@ -993,7 +994,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         />
 
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{
             position: "absolute",

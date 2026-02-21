@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Html5Qrcode } from "html5-qrcode";
 import { setUserAuth } from "../store";
 import { API_BASE_URL } from "../config"; // ⭐ backend ka base URL
+import eatImg from "../assets/eat.png";
+
 
 const BookingPage = ({
   restaurant,
@@ -656,7 +658,7 @@ const BookingPage = ({
         }}
       >
         <img
-          src="/src/assets/eat.png"
+          src={eatImg}
           alt="eat"
           style={{ width: 40, height: 40, cursor: "pointer" }}
           onClick={() => setShowMenu((prev) => !prev)}
