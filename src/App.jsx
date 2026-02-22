@@ -8,9 +8,14 @@ import LoginPage from "./components/LoginPage";
 import UserDashboard from "./components/UserDashboard";
 import BookingPage from "./components/BookingPage";
 import RestaurantControlPanel from "./components/RestaurantControlPanel";
+import GlobalLoader from "./components/GlobalLoader";
+
 
 
 const App = () => {
+
+  const [globalLoading, setGlobalLoading] = useState(false);
+
   // Redux se data
   const restaurants = useSelector((state) => state.restaurants.list);
   const auth = useSelector((state) => state.auth);
@@ -20,6 +25,7 @@ const App = () => {
     auth && auth.user ? "dashboard" : "start"
   );
 
+  
   // audio
   const audioRef = useRef(null);
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -108,17 +114,22 @@ const App = () => {
       />
 
       {currentScreen === "start" && (
-        <StartScreen onEnter={() => setCurrentScreen("login")} />
+        <StartScreen
+          onEnter={() => setCurrentScreen("login")}
+          setGlobalLoading={setGlobalLoading}
+        />
       )}
 
       {currentScreen === "login" && (
         <LoginPage
           onBack={() => setCurrentScreen("start")}
+          setGlobalLoading={setGlobalLoading}
           onLoginSuccess={() => setCurrentScreen("dashboard")}
           onRestaurantLoginSuccess={(restaurantAccount) => {
             setActiveRestaurantAccount(restaurantAccount);
             setCurrentScreen("restaurant");
           }}
+          
         />
       )}
 
@@ -130,6 +141,7 @@ const App = () => {
           setHistory={setHistory}
           favorites={favorites}
           setFavorites={setFavorites}
+          setGlobalLoading={setGlobalLoading}
         />
       )}
 
@@ -137,6 +149,7 @@ const App = () => {
         <RestaurantControlPanel
           restaurant={activeRestaurantAccount}
           onBackToLogin={handleBackToLogin}
+          setGlobalLoading={setGlobalLoading}
         />
       )}
 
@@ -148,6 +161,7 @@ const App = () => {
           favorites={favorites}
           setFavorites={setFavorites}
           onBack={handleCloseBooking}
+          setGlobalLoading={setGlobalLoading}
         />
       )}
 
@@ -198,6 +212,7 @@ const App = () => {
       >
         {musicPlaying ? "🔇 Stop Music" : "🔊 Play Music"}
       </button>
+      {globalLoading && <GlobalLoader />}
     </div>
   );
 };

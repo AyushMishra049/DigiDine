@@ -6,6 +6,7 @@ import v0 from "../assets/v0.mp4";
 import { API_BASE_URL } from "../config"; // ⭐ NEW: backend base URL
 import eatImg from "../assets/eat.png";
 
+
 const InputField = ({ label, helper, value, onChange, type = "text" }) => (
   <div style={{ width: "100%", marginBottom: 8 }}>
     <div style={{ fontSize: 12, marginBottom: 2 }}>{label}</div>
@@ -26,7 +27,7 @@ const InputField = ({ label, helper, value, onChange, type = "text" }) => (
   </div>
 );
 
-const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
+const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess, setGlobalLoading }) => {
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants.list);
   const auth = useSelector((state) => state.auth);
@@ -101,6 +102,9 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
   // ⭐ USER ACCOUNT (no restaurantId) -> use backend register API
   const createAccount = async () => {
     try {
+      // 🔵 GLOBAL LOADER ON
+      setGlobalLoading(true);
+
       if (confirmPassword && accountPassword !== confirmPassword) {
         window.alert("Password and Confirm Password do not match.");
         return;
@@ -114,7 +118,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         return;
       }
 
-      // USER ACCOUNT (no restaurantId) -> backend
+      // USER ACCOUNT (Backend)
       if (!restaurantId) {
         if (!email && !firstName) {
           window.alert(
@@ -122,7 +126,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
           );
           return;
         }
-        // Backend call: /api/auth/register
+
         const body = {
           name: firstName || email,
           email: email || "",
@@ -136,6 +140,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
+
         const data = await res.json().catch(() => null);
 
         if (!res.ok) {
@@ -147,6 +152,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         }
 
         window.alert("User account created successfully! Please login.");
+
         // reset fields
         setFirstName("");
         setLastName("");
@@ -158,15 +164,18 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         return;
       }
 
-      // RESTAURANT ACCOUNT (stored locally)
+      // RESTAURANT ACCOUNT (LocalStorage)
       if (!restaurantName || !restaurantCity) {
         window.alert("Please fill Restaurant Name and City.");
         return;
       }
+
       const restaurantAccounts = JSON.parse(
         localStorage.getItem("restaurantAccounts") || "[]"
       );
+
       const idExists = restaurantAccounts.some((r) => r.id === restaurantId);
+
       if (idExists) {
         window.alert(
           "This Restaurant Id is already registered. Use a different Id."
@@ -183,6 +192,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
         email: email,
         password: accountPassword,
       };
+
       restaurantAccounts.push(newRestaurantAccount);
       localStorage.setItem(
         "restaurantAccounts",
@@ -201,6 +211,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
       );
 
       window.alert("Restaurant account created successfully! Please login.");
+
       // reset fields
       setFirstName("");
       setLastName("");
@@ -214,12 +225,15 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
       setAccountPassword("");
       setConfirmPassword("");
       setView("restLogin");
+
     } catch (err) {
       console.error("Error while creating account:", err);
       window.alert("Server error while creating account. Please try again.");
+    } finally {
+      // 🔴 GLOBAL LOADER OFF (VERY IMPORTANT)
+      setGlobalLoading(false);
     }
   };
-
   // ---------- USER LOGIN ----------
   // ⭐ UPDATED: use backend /api/auth/login
   const handleNormalLogin = async () => {
@@ -228,6 +242,7 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
       return;
     }
     try {
+      setGlobalLoading(true); //state loader on
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -262,40 +277,60 @@ const LoginPage = ({ onBack, onLoginSuccess, onRestaurantLoginSuccess }) => {
       console.error("Error during login:", err);
       alert("Server error while logging in. Please try again.");
     }
+    finally {
+      // 🔴 GLOBAL LOADER OFF (VERY IMPORTANT)
+      setGlobalLoading(false);
+    }
   };
 
   // ---------- RESTAURANT LOGIN (localStorage) ----------
   const handleRestLogin = () => {
-    if (!restLoginName || !restLoginPassword || !restLoginId) {
-      alert("Please fill all restaurant login fields.");
-      return;
-    }
-    const restaurantAccounts = JSON.parse(
-      localStorage.getItem("restaurantAccounts") || "[]"
-    );
-    const foundRest = restaurantAccounts.find(
-      (r) =>
-        r.id === restLoginId &&
-        r.password === restLoginPassword &&
-        (r.name === restLoginName || r.email === restLoginName)
-    );
-    if (!foundRest) {
-      alert("Wrong restaurant ID, name/email, or password");
-      return;
-    }
-    dispatch(
-      setRestaurantAuth({
-        name: foundRest.name,
-        id: foundRest.id,
-        loggedInAt: new Date().toISOString(),
-      })
-    );
-    alert("Restaurant login successful!");
     
-    if (onRestaurantLoginSuccess) {
-      onRestaurantLoginSuccess(foundRest);
-    }
 
+    try {
+      setGlobalLoading(true);
+      if (!restLoginName || !restLoginPassword || !restLoginId) {
+        alert("Please fill all restaurant login fields.");
+        return;
+      }
+
+      const restaurantAccounts = JSON.parse(
+        localStorage.getItem("restaurantAccounts") || "[]"
+      );
+
+      const foundRest = restaurantAccounts.find(
+        (r) =>
+          r.id === restLoginId &&
+          r.password === restLoginPassword &&
+          (r.name === restLoginName || r.email === restLoginName)
+      );
+
+      if (!foundRest) {
+        alert("Wrong restaurant ID, name/email, or password");
+        return;
+      }
+
+      dispatch(
+        setRestaurantAuth({
+          name: foundRest.name,
+          id: foundRest.id,
+          loggedInAt: new Date().toISOString(),
+        })
+      );
+
+      alert("Restaurant login successful!");
+
+      if (onRestaurantLoginSuccess) {
+        onRestaurantLoginSuccess(foundRest);
+      }
+
+    } catch (error) {
+      console.error("Login Error:", error);
+      alert("Something went wrong!");
+    } finally {
+      // ✅ Loader hamesha band hoga
+      setGlobalLoading(false);
+    }
   };
 
   // ---------- Main Render ----------
